@@ -97,7 +97,7 @@ namespace Shooting
             float dis = 0;
             new Plane(Vector3.up, Vector3.zero).Raycast(ray, out dis); // 计算射线与平面的交点
             m_CameraBottomPosition = ray.origin + dis * ray.direction; // 更新摄像机底部位置
-            m_BackBlock.position = m_CameraBottomPosition - Vector3.forward * 5; // 更新背景物体的位置
+            m_BackBlock.position = m_CameraBottomPosition - Vector3.forward * 3; // 更新背景物体的位置
 
             ray = GetComponent<Camera>()
                 .ScreenPointToRay(new Vector3(0.5f * Screen.width, Screen.height, 0)); // 从屏幕底部发射射线

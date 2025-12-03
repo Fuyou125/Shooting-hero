@@ -6,13 +6,17 @@ namespace Shooting
 {
     public class PlayerCharacter : MonoBehaviour
     {
-        [HideInInspector] public static PlayerCharacter m_Current; // 当前玩家实例
+        [HideInInspector] 
+        public static PlayerCharacter m_Current; // 当前玩家实例
 
-        [SerializeField] private Transform m_TurnBase; // 转动基础物体
-        [SerializeField] private Transform m_AimBase; // 瞄准基础物体
+        [SerializeField] 
+        private Transform m_TurnBase; // 转动基础物体
+        [SerializeField] 
+        private Transform m_AimBase; // 瞄准基础物体
 
         //-------------------------------
-        [HideInInspector] public bool m_InControl = false; // 是否控制玩家
+        [HideInInspector] 
+        public bool m_InControl = false; // 是否控制玩家
 
         public Transform[] m_WeaponHands; // 玩家武器手的 Transform
         public Transform m_FirePoint; // 开火点
@@ -28,6 +32,11 @@ namespace Shooting
         public WeaponBase[] m_Weapons; // 玩家所拥有的武器
         [HideInInspector]
         public int m_WeaponNum = 0; // 当前装备的武器编号
+        
+        [HideInInspector]
+        public int m_WpnPowerLevel = 0; // 武器能量等级
+        [HideInInspector]
+        public float m_WpnPowerTime = 0; // 武器能量剩余时间
 
         public Animator m_Animator; // 玩家动画控制器
 
@@ -55,24 +64,50 @@ namespace Shooting
             if (m_InControl)
             {
                 m_Input_Fire = PlayerController.MainPlayerController.Input_FireHold; // 获取开火输入
+
+
+                // 获取玩家的移动输入
+                m_MovementInput = PlayerController.MainPlayerController.m_Input_Movement;
+                // 计算玩家的转动角度
+                Vector3 axis = Vector3.Cross(Vector3.up, m_MovementInput); // 计算移动方向的法线
+
+                // // 如果找到最佳目标，进行瞄准
+                // if (bestTarget != null)
+                // {
+                //     Vector3 targetPos = bestTarget.m_TargetCenter.position;
+                //     Vector3 targetDir = targetPos - m_FirePoint.position;
+                //     targetDir.y = 0;
+                //     m_AimBase.rotation = Quaternion.Lerp(m_AimBase.rotation, Quaternion.LookRotation(targetDir), 20 * Time.deltaTime); // 平滑过渡瞄准方向
+                //     m_TempTarget = bestTarget; // 更新临时目标
+                // }
+                // else
+                // {
+                //     m_TempTarget = null; // 没有目标时，清空临时目标
+                //     m_AimBase.localRotation = Quaternion.Lerp(m_AimBase.localRotation, Quaternion.identity, 20 * Time.deltaTime); // 恢复原始瞄准
+                // }
+                
+                // 玩家转向控制
+                if (m_MovementInput != Vector3.zero)
+                {
+                    Vector3 faceDirection = m_MovementInput; // 计算面朝方向
+                    faceDirection.y = 0;
+                    faceDirection.Normalize(); // 单位化方向
+                    m_TurnBase.rotation = Quaternion.Lerp(m_TurnBase.rotation, Quaternion.LookRotation(faceDirection),
+                        10 * Time.deltaTime); // 平滑过渡旋转
+                }
+
+                m_Weapons[m_WeaponNum].Input_FireHold = m_Input_Fire;
             }
 
-            // 获取玩家的移动输入
-            m_MovementInput = PlayerController.MainPlayerController.m_Input_Movement;
-            // 计算玩家的转动角度
-            Vector3 axis = Vector3.Cross(Vector3.up, m_MovementInput); // 计算移动方向的法线
-
-            // 玩家转向控制
-            if (m_MovementInput != Vector3.zero)
+            if (m_WpnPowerLevel == 1)
             {
-                Vector3 faceDirection = m_MovementInput; // 计算面朝方向
-                faceDirection.y = 0;
-                faceDirection.Normalize(); // 单位化方向
-                m_TurnBase.rotation = Quaternion.Lerp(m_TurnBase.rotation, Quaternion.LookRotation(faceDirection),
-                    10 * Time.deltaTime); // 平滑过渡旋转
+                m_WpnPowerTime -= Time.deltaTime;
+                if (m_WpnPowerTime <= 0)
+                {
+                    m_WeaponPowerParticle.SetActive(false); // 关闭能量粒子效果
+                    SetWeaponPowerLevel(0); // 重置武器能量等级
+                }
             }
-            
-            m_Weapons[m_WeaponNum].Input_FireHold = m_Input_Fire;
 
             // 更新动画参数
             Vector3 vSpeed = GetComponent<Rigidbody>().velocity;
@@ -101,6 +136,42 @@ namespace Shooting
                 totalVelocity.y = rigidBody.velocity.y;
                 rigidBody.velocity = totalVelocity;
             }
+        }
+        
+        // 更新玩家武器的后坐力
+        void LateUpdate()
+        {
+            float recoil = m_Weapons[m_WeaponNum].RecoilTimer;
+            m_WeaponHands[0].localRotation *= Quaternion.Euler(0, -4 * recoil, 0); // 调整武器位置
+            m_WeaponHands[1].localRotation *= Quaternion.Euler(0, -4 * recoil, 0);
+            m_WeaponHands[0].localPosition += new Vector3(0, 0, -.5f * recoil); // 调整武器位置
+        }
+        
+        // 设置武器的能量等级
+        public void SetWeaponPowerLevel(int level)
+        {
+            m_WpnPowerLevel = level;
+            if (level == 1)
+            {
+                m_WpnPowerTime = 16; // 设置能量持续时间
+                m_WeaponPowerParticle.SetActive(true); // 启用能量粒子效果
+            }
+
+            // 设置所有武器的能量等级
+            foreach (WeaponBase w in m_Weapons)
+            {
+                w.m_PowerLevel = level;
+            }
+        }
+        
+        // 设置玩家装备的武器
+        public void SetWeapon(int num)
+        {
+            foreach (WeaponBase w in m_Weapons)
+            {
+                w.Input_FireHold = false; // 禁用所有武器的开火输入
+            }
+            m_WeaponNum = num; // 设置当前装备的武器编号
         }
     }
 }
