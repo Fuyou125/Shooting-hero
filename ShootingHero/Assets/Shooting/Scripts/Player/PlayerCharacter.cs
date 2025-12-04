@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Shooting
+namespace Shooting.Gameplay
 {
     public class PlayerCharacter : MonoBehaviour
     {
@@ -39,17 +39,22 @@ namespace Shooting
         public float m_WpnPowerTime = 0; // 武器能量剩余时间
 
         public Animator m_Animator; // 玩家动画控制器
+        
+        public GameObject m_GrenadePrefab1; // 手雷预设
+        
+        [HideInInspector]
+        public PlayerSkills m_PlayerSkills; // 玩家技能控制
 
         void Awake()
         {
             m_Current = this; // 初始化当前玩家实例
-            // m_PlayerPowers = GetComponent<PlayerPowers>(); // 获取玩家技能控制组件
+            m_PlayerSkills = GetComponent<PlayerSkills>(); // 获取玩家技能控制组件
         }
 
         void Start()
         {
-            // m_DamageControl = GetComponent<DamageControl>(); // 获取伤害控制组件
-            // m_DamageControl.OnDamaged.AddListener(HandleDamage); // 伤害事件监听
+            // m_DamageController = GetComponent<DamageControl>(); // 获取伤害控制组件
+            // m_DamageController.OnDamaged.AddListener(HandleDamage); // 伤害事件监听
             m_InControl = true; // 玩家可以控制
         }
 
@@ -64,7 +69,24 @@ namespace Shooting
             if (m_InControl)
             {
                 m_Input_Fire = PlayerController.MainPlayerController.Input_FireHold; // 获取开火输入
-
+                
+                // 判断是否使用技能(如投掷手雷)
+                if (Input.GetKeyDown(KeyCode.Z))
+                {
+                    if (m_PlayerSkills.m_HaveSkill) // 判断是否有技能
+                    {
+                        switch (m_PlayerSkills.m_SkillID)
+                        {
+                            case 0: // 当前技能：投掷手雷
+                                if (m_PlayerSkills.m_AmmoCount > 0)
+                                {
+                                    ThrowGrenade(); // 投掷手雷
+                                    m_PlayerSkills.m_AmmoCount--; // 消耗一个手雷
+                                }
+                                break;
+                        }
+                    }
+                }
 
                 // 获取玩家的移动输入
                 m_MovementInput = PlayerController.MainPlayerController.m_Input_Movement;
@@ -127,13 +149,13 @@ namespace Shooting
                 totalVelocity += 5 * m_MovementInput; // 加上移动输入的速度
                 totalVelocity.y = 0; // 保持水平速度
                 totalVelocity = Vector3.ClampMagnitude(totalVelocity, 11); // 限制速度最大值
-                totalVelocity.y = rigidBody.velocity.y; // 保留垂直速度
+                totalVelocity.y = rigidBody.velocity.y - 10; // 保留垂直速度
                 rigidBody.velocity = totalVelocity;
             }
             else
             {
                 totalVelocity -= .4f * totalVelocity; // 减速
-                totalVelocity.y = rigidBody.velocity.y;
+                totalVelocity.y = rigidBody.velocity.y - 10;
                 rigidBody.velocity = totalVelocity;
             }
         }
@@ -172,6 +194,47 @@ namespace Shooting
                 w.Input_FireHold = false; // 禁用所有武器的开火输入
             }
             m_WeaponNum = num; // 设置当前装备的武器编号
+        }
+        
+        // 玩家投掷手雷
+        public void ThrowGrenade()
+        {
+            Vector3 start = transform.position;
+            Vector3 end = PlayerController.MainPlayerController.AimPosition + new Vector3(0, 1, 0);
+            GameObject obj = Instantiate(m_GrenadePrefab1); // 创建手雷
+            obj.transform.position = transform.position;
+            PlayersGrenade g = obj.GetComponent<PlayersGrenade>(); // 获取手雷控制
+            g.m_StartPosition = start; // 设置起始位置
+            g.m_TargetPosition = end; // 设置目标位置
+        }
+        
+        // 处理玩家拾取的物品
+        public void HandlePickup(string itemType, int count)
+        {
+            if (itemType == "Gem")
+            {
+                PlayerController.MainPlayerController.m_GemCount++; // 增加宝石数量
+            }
+            else if (itemType == "WeaponPower")
+            {
+                SetWeaponPowerLevel(1); // 设置武器能量
+            }
+            else if (itemType == "Weapon_Pistol")
+            {
+                SetWeapon(0); // 切换为手枪
+            }
+            else if (itemType == "Weapon_Shotgun")
+            {
+                SetWeapon(1); // 切换为霰弹枪
+            }
+            else if (itemType == "Skill_Grenade")
+            {
+                m_PlayerSkills.SetNewSkill(0); // 设置新的技能
+            }
+            // else if (itemType == "Health")
+            // {
+            //     m_DamageControl.AddHealth(count); // 增加玩家生命
+            // }
         }
     }
 }

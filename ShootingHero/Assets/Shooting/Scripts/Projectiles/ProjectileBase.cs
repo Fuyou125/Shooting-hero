@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Shooting
+namespace Shooting.Gameplay
 {
     public class ProjectileBase : MonoBehaviour
     {

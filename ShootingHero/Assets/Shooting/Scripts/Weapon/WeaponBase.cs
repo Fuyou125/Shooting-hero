@@ -2,7 +2,7 @@ using System;
 using Shooter.Gameplay;
 using UnityEngine;
 
-namespace Shooting
+namespace Shooting.Gameplay
 {
     // 这是武器基类，其他具体武器类型会继承该类并实现具体的开火逻辑
     public class WeaponBase : MonoBehaviour

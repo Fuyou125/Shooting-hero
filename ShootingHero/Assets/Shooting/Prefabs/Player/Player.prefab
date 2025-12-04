@@ -16206,9 +16206,10 @@ GameObject:
   - component: {fileID: 7800447711359089749}
   - component: {fileID: 637153715916416489}
   - component: {fileID: 4304558114555357104}
+  - component: {fileID: 3697078453114818605}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -16287,6 +16288,8 @@ MonoBehaviour:
   m_WpnPowerLevel: 0
   m_WpnPowerTime: 0
   m_Animator: {fileID: 8705597729138852988}
+  m_GrenadePrefab1: {fileID: 1732822374990715288, guid: ff502c4bd71e3a347b4afbe2f1d1494f, type: 3}
+  m_PlayerSkills: {fileID: 0}
 --- !u!136 &4304558114555357104
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -16310,6 +16313,23 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &3697078453114818605
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8545633193280349580}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: faf7cfb1e12c44b693c354f4bc8c0bcf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HaveSkill: 0
+  m_SkillID: 0
+  m_HasTimer: 0
+  m_Timer: 0
+  m_AmmoCount: 0
 --- !u!1 &8574447734761774939
 GameObject:
   m_ObjectHideFlags: 0
@@ -16983,18 +17003,6 @@ PrefabInstance:
       propertyPath: m_FirePoint
       value: 
       objectReference: {fileID: 3341258768852401782}
-    - target: {fileID: 4476522722936987145, guid: e7d2fc4b0bf268d42aa4c94d2ebcf2f1, type: 3}
-      propertyPath: BulletPrefab
-      value: 
-      objectReference: {fileID: 2514927378536157983, guid: 51aa125d4e86db3429b8d80b08484188, type: 3}
-    - target: {fileID: 4476522722936987145, guid: e7d2fc4b0bf268d42aa4c94d2ebcf2f1, type: 3}
-      propertyPath: EffectPrefab
-      value: 
-      objectReference: {fileID: 5599717751194728857, guid: 826851dab3cbbe04f8867249ed764ea8, type: 3}
-    - target: {fileID: 4476522722936987145, guid: e7d2fc4b0bf268d42aa4c94d2ebcf2f1, type: 3}
-      propertyPath: InfiniteAmmo
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4476522722936987145, guid: e7d2fc4b0bf268d42aa4c94d2ebcf2f1, type: 3}
       propertyPath: m_ParticlePoint
       value: 

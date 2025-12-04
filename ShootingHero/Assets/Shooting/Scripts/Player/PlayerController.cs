@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Shooting
+namespace Shooting.Gameplay
 {
 
     public class PlayerController : MonoBehaviour
@@ -11,6 +11,10 @@ namespace Shooting
 
         // 玩家重生点
         public Transform m_SpawnPoint;
+        
+        // 玩家当前的宝石数量（隐藏）
+        [HideInInspector]
+        public int m_GemCount = 0;
 
         // 玩家预设体
         public GameObject PlayerPrefab1;
@@ -85,12 +89,12 @@ namespace Shooting
                 Input_FireHold = true; // 持续开火
             }
 
-            // // 获取鼠标的位置并计算瞄准点
-            // Ray ray = CameraController.m_Current.GetComponent<Camera>().ScreenPointToRay(Input.mousePosition);
-            // float dis = 0;
-            // new Plane(Vector3.up, Vector3.zero).Raycast(ray, out dis); // 计算射线与平面的交点
-            // AimPosition = ray.origin + dis * ray.direction; // 计算瞄准位置
-            // m_AimPointTransform.position = AimPosition; // 更新瞄准点的位置
+            // 获取鼠标的位置并计算瞄准点
+            Ray ray = CameraController.m_Current.GetComponent<Camera>().ScreenPointToRay(Input.mousePosition);
+            float dis = 0;
+            new Plane(Vector3.up, Vector3.zero).Raycast(ray, out dis); // 计算射线与平面的交点
+            AimPosition = ray.origin + dis * ray.direction; // 计算瞄准位置
+            m_AimPointTransform.position = AimPosition; // 更新瞄准点的位置
         }
 
         // 玩家重生函数

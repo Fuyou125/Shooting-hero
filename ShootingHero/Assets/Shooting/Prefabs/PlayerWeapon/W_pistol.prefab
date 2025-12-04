@@ -59,10 +59,10 @@ MonoBehaviour:
   Damage: 1
   ProjectileSpeed: 100
   Range: 40
-  InfiniteAmmo: 0
+  InfiniteAmmo: 1
   WeaponModelPrefab: {fileID: 0}
-  BulletPrefab: {fileID: 0}
-  EffectPrefab: {fileID: 0}
+  BulletPrefab: {fileID: 2514927378536157983, guid: 51aa125d4e86db3429b8d80b08484188, type: 3}
+  EffectPrefab: {fileID: 5599717751194728857, guid: 826851dab3cbbe04f8867249ed764ea8, type: 3}
   WeaponEnable: 1
   AmmoCount: 50
   m_FirePoint: {fileID: 0}
