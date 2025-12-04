@@ -77,7 +77,7 @@ namespace Shooting
                 return;
 
             // 触发伤害抖动效果
-            // ApplyDamageShake();
+            ApplyDamageShake();
 
             // 更新上次伤害的方向
             LastDamageDirection = dir;
