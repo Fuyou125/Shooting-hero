@@ -38,5 +38,11 @@ namespace Shooting
                 m_MainSaveData.Save(); // 保存数据
             }
         }
+        
+        // 处理玩家死亡
+        public void HandlePlayerDeath()
+        {
+            // StartCoroutine(CoroutineHandleGameOver());
+        }
     }
 }

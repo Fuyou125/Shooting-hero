@@ -49,6 +49,15 @@ namespace Shooting.Gameplay
         void Update()
         {
             UpdateInputs(); // 更新玩家输入
+            // 如果玩家没有死亡，则检查角色是否死亡
+            if (!m_IsDead)
+            {
+                if (PlayerCharacter.m_Current.m_IsDead)
+                {
+                    m_IsDead = true;  // 设置为死亡状态
+                    GameController.m_Current.HandlePlayerDeath();  // 处理玩家死亡逻辑
+                }
+            }
         }
 
         private void UpdateInputs()

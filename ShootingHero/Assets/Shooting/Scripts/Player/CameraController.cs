@@ -25,7 +25,7 @@ namespace Shooting.Gameplay
 
         public Transform m_BackBlock; // 后景物体（可能是为了实现遮挡效果）
 
-        [HideInInspector] public Vector3 m_CameraBottomPosition; // 摄像机底部位置
+        public Vector3 m_CameraBottomPosition; // 摄像机底部位置
         [HideInInspector] public Vector3 m_CameraTopPosition; // 摄像机顶部位置
 
         Vector3 Direction; // 摄像机的前进方向
@@ -41,8 +41,8 @@ namespace Shooting.Gameplay
             Direction = transform.forward; // 初始的摄像机前进方向
             m_MyCamera = GetComponent<Camera>(); // 获取摄像机组件
             m_MinZ = PlayerCharacter.m_Current.transform.position.z + 10; // 设置最小Z轴位置为玩家当前位置的Z轴+10
-            m_CameraBottomPosition = new Vector3(0, 0, -100); // 初始底部位置
-            m_CameraTopPosition = new Vector3(0, 0, -100); // 初始顶部位置
+            m_CameraBottomPosition = new Vector3(0, 0, -200); // 初始底部位置
+            m_CameraTopPosition = new Vector3(0, 0, -200); // 初始顶部位置
 
             float distance = 80; // 摄像机与目标之间的距离
             Direction = Quaternion.Euler(40, 0, 0) * Vector3.forward; // 摄像机的初始旋转方向

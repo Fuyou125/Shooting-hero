@@ -16203,6 +16203,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3602730587473930805}
+  - component: {fileID: 109841190651837326}
   - component: {fileID: 7800447711359089749}
   - component: {fileID: 637153715916416489}
   - component: {fileID: 4304558114555357104}
@@ -16234,6 +16235,29 @@ Transform:
   - {fileID: 6816507814512558545}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &109841190651837326
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8545633193280349580}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afee7de7fb61431dab4b087e079affdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Damage: 100
+  MaxDamage: 6
+  IsDead: 0
+  m_NoDamage: 0
+  LastDamageDirection: {x: 0, y: 0, z: 0}
+  LastDamageFactor: 1
+  DamageShakeAmount: 0
+  DamageShakeAngle: 0
+  OnDamaged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!54 &7800447711359089749
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -16273,6 +16297,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69d347e4f46762d43905578387590833, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_DamageControl: {fileID: 0}
   m_TurnBase: {fileID: 3182522640177616123}
   m_AimBase: {fileID: 7554119361441852896}
   m_InControl: 0
@@ -16281,15 +16306,19 @@ MonoBehaviour:
   - {fileID: 5074360243386026212}
   m_FirePoint: {fileID: 3341258768852401782}
   m_WeaponPowerParticle: {fileID: 256580012696123632}
+  m_DeathParticle: {fileID: 5599717751194728857, guid: 8f1a07dfb9c4b654f9202589fd624f38, type: 3}
+  m_IsDead: 0
   m_Weapons:
   - {fileID: 8253702075977975879}
   - {fileID: 6038904074007967047}
   m_WeaponNum: 0
+  m_TempTarget: {fileID: 0}
   m_WpnPowerLevel: 0
   m_WpnPowerTime: 0
   m_Animator: {fileID: 8705597729138852988}
   m_GrenadePrefab1: {fileID: 1732822374990715288, guid: ff502c4bd71e3a347b4afbe2f1d1494f, type: 3}
   m_PlayerSkills: {fileID: 0}
+  m_ShieldObject: {fileID: 4988763498657684765}
 --- !u!136 &4304558114555357104
 CapsuleCollider:
   m_ObjectHideFlags: 0

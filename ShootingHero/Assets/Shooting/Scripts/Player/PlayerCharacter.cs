@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using Shooting.GamePlay;
 using UnityEngine;
 
 namespace Shooting.Gameplay
 {
     public class PlayerCharacter : MonoBehaviour
     {
-        [HideInInspector] 
+        
+        public DamageController m_DamageControl; // 伤害控制组件
         public static PlayerCharacter m_Current; // 当前玩家实例
 
         [SerializeField] 
@@ -21,6 +23,7 @@ namespace Shooting.Gameplay
         public Transform[] m_WeaponHands; // 玩家武器手的 Transform
         public Transform m_FirePoint; // 开火点
         public GameObject m_WeaponPowerParticle; // 武器能量粒子效果
+        public GameObject m_DeathParticle; // 死亡粒子效果
 
         Vector3 m_MovementInput; // 玩家移动输入
         Vector3 m_DashDirection; // 冲刺方向
@@ -28,10 +31,15 @@ namespace Shooting.Gameplay
         bool m_Input_Fire; // 开火输入
         bool m_Input_Fire2; // 另一个开火输入（暂时没有用）
         bool m_Input_LockAim; // 锁定瞄准输入
-
+        
+        [HideInInspector]
+        public bool m_IsDead = false; // 玩家是否死亡
+        
         public WeaponBase[] m_Weapons; // 玩家所拥有的武器
         [HideInInspector]
         public int m_WeaponNum = 0; // 当前装备的武器编号
+        
+        public TargetsObject m_TempTarget; // 临时瞄准目标
         
         [HideInInspector]
         public int m_WpnPowerLevel = 0; // 武器能量等级
@@ -44,6 +52,8 @@ namespace Shooting.Gameplay
         
         [HideInInspector]
         public PlayerSkills m_PlayerSkills; // 玩家技能控制
+        
+        public GameObject m_ShieldObject; // 玩家护盾对象
 
         void Awake()
         {
@@ -53,8 +63,8 @@ namespace Shooting.Gameplay
 
         void Start()
         {
-            // m_DamageController = GetComponent<DamageControl>(); // 获取伤害控制组件
-            // m_DamageController.OnDamaged.AddListener(HandleDamage); // 伤害事件监听
+            m_DamageControl = GetComponent<DamageController>(); // 获取伤害控制组件
+            m_DamageControl.OnDamaged.AddListener(HandleDamage); // 伤害事件监听
             m_InControl = true; // 玩家可以控制
         }
 
@@ -92,21 +102,45 @@ namespace Shooting.Gameplay
                 m_MovementInput = PlayerController.MainPlayerController.m_Input_Movement;
                 // 计算玩家的转动角度
                 Vector3 axis = Vector3.Cross(Vector3.up, m_MovementInput); // 计算移动方向的法线
+                
+                // 查找目标
+                List<TargetsObject> targets = TargetController.m_Main.m_Targets; // 获取目标列表
+                
+                TargetsObject bestTarget = null;
+                float minAngle = 40; // 初始化最小角度为40
+                foreach (TargetsObject target in targets)
+                {
+                    if (target == null) continue;
 
-                // // 如果找到最佳目标，进行瞄准
-                // if (bestTarget != null)
-                // {
-                //     Vector3 targetPos = bestTarget.m_TargetCenter.position;
-                //     Vector3 targetDir = targetPos - m_FirePoint.position;
-                //     targetDir.y = 0;
-                //     m_AimBase.rotation = Quaternion.Lerp(m_AimBase.rotation, Quaternion.LookRotation(targetDir), 20 * Time.deltaTime); // 平滑过渡瞄准方向
-                //     m_TempTarget = bestTarget; // 更新临时目标
-                // }
-                // else
-                // {
-                //     m_TempTarget = null; // 没有目标时，清空临时目标
-                //     m_AimBase.localRotation = Quaternion.Lerp(m_AimBase.localRotation, Quaternion.identity, 20 * Time.deltaTime); // 恢复原始瞄准
-                // }
+                    Vector3 targetPos = target.m_TargetCenter.position; // 获取目标位置
+                    Vector3 dir = targetPos - transform.position; // 计算目标与玩家的方向
+                    dir.y = 0; // 忽略高度差
+                    float delta = Vector3.Angle(m_TurnBase.forward, dir); // 计算角度差
+                    float distance = dir.magnitude; // 计算距离
+
+                    if (distance > 30) continue; // 距离太远，跳过
+
+                    if (delta < minAngle) // 如果角度差更小
+                    {
+                        bestTarget = target;
+                        minAngle = delta;
+                    }
+                }
+                
+                // 如果找到最佳目标，进行瞄准
+                if (bestTarget != null)
+                {
+                    Vector3 targetPos = bestTarget.m_TargetCenter.position;
+                    Vector3 targetDir = targetPos - m_FirePoint.position;
+                    targetDir.y = 0;
+                    m_AimBase.rotation = Quaternion.Lerp(m_AimBase.rotation, Quaternion.LookRotation(targetDir), 20 * Time.deltaTime); // 平滑过渡瞄准方向
+                    m_TempTarget = bestTarget; // 更新临时目标
+                }
+                else
+                {
+                    m_TempTarget = null; // 没有目标时，清空临时目标
+                    m_AimBase.localRotation = Quaternion.Lerp(m_AimBase.localRotation, Quaternion.identity, 20 * Time.deltaTime); // 恢复原始瞄准
+                }
                 
                 // 玩家转向控制
                 if (m_MovementInput != Vector3.zero)
@@ -136,6 +170,22 @@ namespace Shooting.Gameplay
             vSpeed.y = 0; // 仅关注水平速度
             float runSpeed = Mathf.Clamp(vSpeed.magnitude / 10f, 0, 1); // 计算跑步速度
             m_Animator.SetFloat("RunSpeed", runSpeed); // 设置动画中的跑步速度参数
+            
+            // 更新护盾位置
+            m_ShieldObject.transform.position = transform.position + new Vector3(0, 1, 0);
+
+            // 检查玩家是否死亡
+            if (!m_IsDead)
+            {
+                if (m_DamageControl.Damage <= 0) // 玩家死亡条件
+                {
+                    m_IsDead = true; // 标记玩家死亡
+                    GameObject obj = Instantiate(m_DeathParticle); // 创建死亡粒子效果
+                    obj.transform.position = transform.position + new Vector3(0, 1, 0);
+                    Destroy(obj, 3); // 3秒后销毁粒子效果
+                    gameObject.SetActive(false); // 玩家对象不可见
+                }
+            }
         }
 
         // 固定时间更新（用于物理）
@@ -158,6 +208,12 @@ namespace Shooting.Gameplay
                 totalVelocity.y = rigidBody.velocity.y - 10;
                 rigidBody.velocity = totalVelocity;
             }
+        }
+        
+        // 处理玩家受到伤害
+        public void HandleDamage()
+        {
+            CameraController.m_Current.StartShake(.2f, .1f); // 震动效果
         }
         
         // 更新玩家武器的后坐力
@@ -231,10 +287,10 @@ namespace Shooting.Gameplay
             {
                 m_PlayerSkills.SetNewSkill(0); // 设置新的技能
             }
-            // else if (itemType == "Health")
-            // {
-            //     m_DamageControl.AddHealth(count); // 增加玩家生命
-            // }
+            else if (itemType == "Health")
+            {
+                m_DamageControl.AddHealth(count); // 增加玩家生命
+            }
         }
     }
 }

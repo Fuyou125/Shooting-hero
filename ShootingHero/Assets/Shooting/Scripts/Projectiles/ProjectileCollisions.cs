@@ -24,7 +24,11 @@ namespace Shooting.Gameplay
                 if (col.gameObject.tag == "Player" && m_IsEnemyTeam)
                 {
                     // 获取目标物体的伤害控制组件，并应用伤害
-                    //TODO
+                    DamageController d = col.gameObject.GetComponent<DamageController>();
+                    if (d != null)
+                    {
+                        d.ApplyDamage(m_Damage, transform.forward, 1);
+                    }
                     // 创建粒子效果
                     CreateHitParticle();
                     // 销毁当前投射物
@@ -33,7 +37,11 @@ namespace Shooting.Gameplay
                 else if (col.gameObject.tag == "Block")
                 {
                     // 获取目标物体的伤害控制组件，并应用伤害
-                    //TODO
+                    DamageController d = col.gameObject.GetComponent<DamageController>();
+                    if (d != null)
+                    {
+                        d.ApplyDamage(m_Damage, transform.forward, 1);
+                    }
                     // 创建粒子效果
                     CreateHitParticle();
                     // 销毁当前投射物
@@ -42,7 +50,11 @@ namespace Shooting.Gameplay
                 else if (col.gameObject.tag == "Enemy" && !m_IsEnemyTeam)
                 {
                     // 获取目标物体的伤害控制组件，并应用伤害
-                    //TODO
+                    DamageController d = col.gameObject.GetComponent<DamageController>();
+                    if (d != null)
+                    {
+                        d.ApplyDamage(m_Damage, transform.forward, 1);
+                    }
                     // 创建粒子效果
                     CreateHitParticle();
                     // 销毁当前投射物
