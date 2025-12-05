@@ -1,7 +1,7 @@
 
 using UnityEngine;
 
-namespace Shooting
+namespace Shooting.Gameplay
 {
     // 检查点控制类，用于管理游戏中的多个检查点
     public class CheckpointController : MonoBehaviour
