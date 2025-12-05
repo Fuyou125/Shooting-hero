@@ -199,13 +199,13 @@ namespace Shooting.Gameplay
                 totalVelocity += 5 * m_MovementInput; // 加上移动输入的速度
                 totalVelocity.y = 0; // 保持水平速度
                 totalVelocity = Vector3.ClampMagnitude(totalVelocity, 11); // 限制速度最大值
-                totalVelocity.y = rigidBody.velocity.y - 10; // 保留垂直速度
+                totalVelocity.y = rigidBody.velocity.y - 4.5f; // 保留垂直速度
                 rigidBody.velocity = totalVelocity;
             }
             else
             {
                 totalVelocity -= .4f * totalVelocity; // 减速
-                totalVelocity.y = rigidBody.velocity.y - 10;
+                totalVelocity.y = rigidBody.velocity.y - 4.5f;
                 rigidBody.velocity = totalVelocity;
             }
         }

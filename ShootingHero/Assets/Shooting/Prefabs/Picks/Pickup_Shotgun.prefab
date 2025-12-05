@@ -10423,7 +10423,7 @@ GameObject:
   - component: {fileID: 6099926596308708546}
   - component: {fileID: 9214506912572517157}
   - component: {fileID: 9003860984017182012}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Pickup_Shotgun
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10481,7 +10481,7 @@ SphereCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3

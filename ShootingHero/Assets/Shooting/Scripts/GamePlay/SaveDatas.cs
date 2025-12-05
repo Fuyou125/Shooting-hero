@@ -6,7 +6,7 @@ namespace Shooting
 {
     // SaveData 类用于保存和加载游戏进度的数据，包括存储关卡进度和最后解锁的关卡
     // 使用 CreateAssetMenu 特性，使得可以在 Unity 编辑器中创建 SaveData 脚本化对象
-    [CreateAssetMenu(fileName = "SaveData", menuName = "CustomObjects/SaveData", order = 1)]
+    [CreateAssetMenu(fileName = "SaveDatas", menuName = "CustomObjects/SaveDatas", order = 1)]
     public class SaveDatas : ScriptableObject
     {
         // 存储当前玩家进度的检查点编号
