@@ -29,5 +29,17 @@ namespace Shooting
         {
             return (new Vector2(v.x, v.y));
         }
+
+        /// <summary>
+        /// 根据角度和长度计算旋转后的单位向量
+        /// </summary>
+        /// <param name="angle">角度</param>
+        /// <param name="length">长度</param>
+        /// <returns></returns>
+        public static Vector3 RotatedLength(float angle, float length)
+        {
+            return (Quaternion.Euler(0,angle,0) * (length * Vector3.forward));
+            // 使用Quaternion旋转，Vector3.forward代表(0,0,1)，然后乘以长度`lenght`
+        }
     }
 }

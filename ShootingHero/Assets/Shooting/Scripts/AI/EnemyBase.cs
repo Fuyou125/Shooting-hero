@@ -45,6 +45,10 @@ namespace Shooting.Gameplay
         // 开始攻击时的距离
         public float m_StartWalkDistance = 10;
         
+        // 是否死亡
+        [HideInInspector]
+        public bool m_IsDead = false;
+        
         // 是否被警觉到
         [HideInInspector]
         public bool m_Alerted = false;
@@ -88,7 +92,7 @@ namespace Shooting.Gameplay
         }
 
         // 处理敌人的死亡逻辑
-        public void HandleDeath()
+        public virtual void HandleDeath()
         {
             m_DamageControl = GetComponent<DamageController>();  // 重新获取伤害控制组件
             
@@ -165,6 +169,12 @@ namespace Shooting.Gameplay
                 obj1.GetComponent<Rigidbody>().angularVelocity = 
                     new Vector3(Random.Range(-20, 20), Random.Range(-20, 20), Random.Range(-20, 20));  // 随机角速度
             }
+        }
+        
+        // 绘制Gizmos，用于在编辑器中调试
+        void OnDrawGizmos()
+        {
+            Gizmos.color = Color.red;  // 设置颜色为红色
         }
     }
 }

@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace Shooting.Gameplay
 {
+    // 敌人移动控制类
     public class EnemyMove : MonoBehaviour
     {
         // 当前的移动方向
@@ -23,7 +24,6 @@ namespace Shooting.Gameplay
 
         // 移动速度
         public float m_MovementSpeed = 20;
-
         
         // 是否朝着移动方向转向
         [HideInInspector]

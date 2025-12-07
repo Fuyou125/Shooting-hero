@@ -10,6 +10,7 @@ namespace Shooting.Gameplay
         public float m_Damage = 1;              // 投射物造成的伤害
         public bool m_IsEnemyTeam = true;       // 判断投射物是否来自敌方队伍
 
+        // Update 是每帧调用一次
         private void Update()
         {
             // 获取当前投射物周围半径为 0.5 的所有碰撞体

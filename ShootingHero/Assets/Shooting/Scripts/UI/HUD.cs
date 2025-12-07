@@ -125,11 +125,11 @@ namespace Shooting.UI
             m_GunNameText.text = m_WeaponNames[PlayerCharacter.m_Current.m_WeaponNum];
             
             // 如果当前有Boss，更新Boss血量显示
-            // if (GameController.m_Current.m_LevelBoss != null)
-            // {
-            //     damage = GameController.m_Current.m_LevelBoss.GetComponent<DamageController>();
-            //     m_BossHealth.fillAmount = damage.Damage / damage.MaxDamage;
-            // }
+            if (GameController.m_Current.m_LevelBoss != null)
+            {
+                damage = GameController.m_Current.m_LevelBoss.GetComponent<DamageController>();
+                m_BossHealth.fillAmount = damage.Damage / damage.MaxDamage;
+            }
             
             // 更新玩家技能显示
             PlayerSkills p = PlayerCharacter.m_Current.GetComponent<PlayerSkills>();
@@ -150,6 +150,12 @@ namespace Shooting.UI
             {
                 m_SkillBase.gameObject.SetActive(false); // 如果没有技能，则隐藏技能栏
             }
+        }
+        
+        // 显示Boss的血量条
+        public void ShowBossHealth()
+        {
+            m_BossHealthBase.gameObject.SetActive(true);
         }
     }
 }

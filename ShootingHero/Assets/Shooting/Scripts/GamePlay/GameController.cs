@@ -11,6 +11,11 @@ namespace Shooting.Gameplay
         // 当前游戏控制器的静态引用
         public static GameController m_Current;
         
+        // 是否进入了Boss战
+        public bool m_EnteredBossFight = false;
+        // 
+        public GameObject m_LevelBoss;
+        
         // 游戏的主存档数据
         public SaveDatas m_MainSaveData;
         

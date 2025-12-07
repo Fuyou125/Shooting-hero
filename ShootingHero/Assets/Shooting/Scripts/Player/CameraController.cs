@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace Shooting.Gameplay
 {
-
     public class CameraController : MonoBehaviour
     {
         private float m_ShakeTimer; // 摄像机晃动的持续时间计时器
@@ -13,20 +12,27 @@ namespace Shooting.Gameplay
 
         public float m_MinZ = 0; // 摄像机的最小Z轴位置
 
-        [HideInInspector] public Transform m_Target; // 摄像机的目标（一般是玩家）
+        [HideInInspector] 
+        public Transform m_Target; // 摄像机的目标（一般是玩家）
 
-        [HideInInspector] public Vector3 m_TargetPoint; // 目标点（例如摄像机的视角焦点）
+        [HideInInspector] 
+        public Vector3 m_TargetPoint; // 目标点（例如摄像机的视角焦点）
 
-        [SerializeField] private Transform m_TargetPointTransform; // 目标点的 Transform，通常用于跟随玩家
+        [SerializeField] 
+        private Transform m_TargetPointTransform; // 目标点的 Transform，通常用于跟随玩家
 
         public static CameraController m_Current; // 当前的 CameraControl 实例
 
         public Camera m_MyCamera; // 当前摄像机对象
+        
+        public Transform m_BossTarget;  // 如果有Boss，摄像机会跟随 Boss 进行调整
 
         public Transform m_BackBlock; // 后景物体（可能是为了实现遮挡效果）
 
+        [HideInInspector] 
         public Vector3 m_CameraBottomPosition; // 摄像机底部位置
-        [HideInInspector] public Vector3 m_CameraTopPosition; // 摄像机顶部位置
+        [HideInInspector] 
+        public Vector3 m_CameraTopPosition; // 摄像机顶部位置
 
         Vector3 Direction; // 摄像机的前进方向
 
@@ -77,13 +83,13 @@ namespace Shooting.Gameplay
             Vector3 targetPosition = PlayerCharacter.m_Current.transform.position; // 默认目标位置是玩家位置
             targetPosition.z = m_MinZ; // 设置目标位置的Z轴位置
 
-            // if (m_BossTarget != null)
-            // {
-            //     // 如果有Boss目标，计算目标位置是玩家位置与Boss位置的平均
-            //     targetPosition = PlayerCharacter.m_Current.transform.position + m_BossTarget.position;
-            //     targetPosition = 0.5f * targetPosition;  // 目标位置是玩家与Boss位置的中点
-            //     targetPosition.x = 0.6f * targetPosition.x;  // 调整X轴位置
-            // }
+            if (m_BossTarget != null)
+            {
+                // 如果有Boss目标，计算目标位置是玩家位置与Boss位置的平均
+                targetPosition = PlayerCharacter.m_Current.transform.position + m_BossTarget.position;
+                targetPosition = 0.5f * targetPosition;  // 目标位置是玩家与Boss位置的中点
+                targetPosition.x = 0.6f * targetPosition.x;  // 调整X轴位置
+            }
 
             // 使用平滑插值让摄像机平滑地跟随目标
             transform.position = Vector3.Lerp(transform.position, targetPosition + -distance * Direction,
