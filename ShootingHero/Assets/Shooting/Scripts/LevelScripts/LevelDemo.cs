@@ -29,17 +29,23 @@ namespace Shooting.Gameplay
         
         void Update()
         {
+            // if (!isopen)
+            // {
+            //     StartCoroutine(HandleDoorRotate());
+            // }
+
             if (!m_KilledBoss)
             {
                 // 如果Boss尚未击败，检查Boss是否死亡
                 DamageController bossDamage = m_BossObject.GetComponent<DamageController>();
                 if (bossDamage.IsDead)
                 {
-                    m_KilledBoss = true;  // 设置Boss已击败
+                    StartCoroutine(HandleDoorRotate());
+                    
                     CameraController.m_Current.m_BossTarget = null;  // 移除Boss目标
                     m_BossBlock1.SetActive(false);  // 隐藏Boss战UI元素
                     CameraController.m_Current.m_BackBlock.gameObject.SetActive(true);  // 显示背景UI
-                    StartCoroutine(HandleDoorRotate());
+                    
                 }
             }
         }
@@ -70,6 +76,7 @@ namespace Shooting.Gameplay
             EndDoor1.transform.rotation = targetRotation1;
             EndDoor2.transform.rotation = targetRotation2;
             isopen = true;
+            m_KilledBoss = true;  // 设置Boss已击败
         }
         
          // 缓动函数（核心优化：让旋转先加速后减速）
@@ -135,7 +142,7 @@ namespace Shooting.Gameplay
             yield return new WaitForSeconds(1);  // 等待1秒
             FadeController.m_Current.StartFadeOut();  // 开始渐出动画
             yield return new WaitForSeconds(2);  // 等待2秒
-            SceneManager.LoadScene("EndScene");  // 加载“EndScene”场景，结束关卡
+            SceneManager.LoadScene("End");  // 加载“EndScene”场景，结束关卡
         }
     }
 }

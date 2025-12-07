@@ -982,9 +982,10 @@ MonoBehaviour:
   m_FacePlayer: 0
   m_StartAttack: 0
   m_StartWalkDistance: 10
+  m_IsDead: 0
   m_Alerted: 0
   m_Animator: {fileID: 0}
-  m_ItemDropCount: 1
+  m_ItemDropCount: 3
   m_BulletPrefab1: {fileID: 7999394987488263699, guid: 0fc29be0d64429d4e91bfaaf826b3772, type: 3}
   m_FireParticlePrefab1: {fileID: 4355478839510505386, guid: 8b1d1d5f924d69b45a74ea82ac7db6d7, type: 3}
 --- !u!114 &3286222333991151049

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4922776834453644080}
   - component: {fileID: 4272451656901418553}
   - component: {fileID: 1462534096127323800}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: BulletPistol_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -88,7 +88,7 @@ GameObject:
   - component: {fileID: 531120667753746307}
   - component: {fileID: 115142002273907150}
   - component: {fileID: 8121959573504675377}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Quad (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -173,7 +173,7 @@ GameObject:
   - component: {fileID: 323053751117548916}
   - component: {fileID: 4615751367147780864}
   - component: {fileID: 1964398675822088065}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Quad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -257,7 +257,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8788145809376389270}
   - component: {fileID: 2187497433764107236}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Line
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -405,7 +405,7 @@ GameObject:
   - component: {fileID: 3028551050187726036}
   - component: {fileID: 521467559841723623}
   - component: {fileID: 921401800605360831}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -489,7 +489,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3410050452366002380}
   - component: {fileID: 2610330869956737834}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Trail
   m_TagString: Untagged
   m_Icon: {fileID: 0}

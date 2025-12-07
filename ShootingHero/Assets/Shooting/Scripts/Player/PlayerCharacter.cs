@@ -7,9 +7,12 @@ namespace Shooting.Gameplay
 {
     public class PlayerCharacter : MonoBehaviour
     {
-        
+        public bool hasForwardGround;
+        public bool isOnGround;
         public DamageController m_DamageControl; // 伤害控制组件
         public static PlayerCharacter m_Current; // 当前玩家实例
+        
+        private Rigidbody rigidBody;
 
         [SerializeField] 
         private Transform m_TurnBase; // 转动基础物体
@@ -27,10 +30,22 @@ namespace Shooting.Gameplay
 
         Vector3 m_MovementInput; // 玩家移动输入
         Vector3 m_DashDirection; // 冲刺方向
+        
+        // 台阶攀爬参数
+        public float stepHeight = 0.3f;       // 可攀爬最大台阶高度（根据游戏调整，如0.25-0.35）
+        public float checkDistance = 0.6f;    // 前方检测距离（建议：胶囊体半径+0.1）
+        public float stepSmoothSpeed = 8f;    // 台阶过渡平滑度（值越大越灵敏）
+        public LayerMask groundLayer;         // 地面/台阶的Layer（避免检测其他物体）
+        
+        // 内部状态
+        private Vector3 currentVelocity;      // 用于SmoothDamp的临时变量
+        private float capsuleHalfHeight;      // 胶囊体半高（缓存以优化性能）
 
         bool m_Input_Fire; // 开火输入
         bool m_Input_Fire2; // 另一个开火输入（暂时没有用）
         bool m_Input_LockAim; // 锁定瞄准输入
+
+        public CapsuleCollider capsuleCollider;
         
         [HideInInspector]
         public bool m_IsDead = false; // 玩家是否死亡
@@ -59,6 +74,10 @@ namespace Shooting.Gameplay
         {
             m_Current = this; // 初始化当前玩家实例
             m_PlayerSkills = GetComponent<PlayerSkills>(); // 获取玩家技能控制组件
+            capsuleCollider = GetComponent<CapsuleCollider>();
+            rigidBody = GetComponent<Rigidbody>();
+            // 计算胶囊体半高（中心到地面的距离）
+            capsuleHalfHeight = capsuleCollider.height / 2f - capsuleCollider.radius;
         }
 
         void Start()
@@ -191,8 +210,6 @@ namespace Shooting.Gameplay
         // 固定时间更新（用于物理）
         void FixedUpdate()
         {
-            Rigidbody rigidBody = GetComponent<Rigidbody>();
-
             Vector3 totalVelocity = rigidBody.velocity;
             if (m_MovementInput != Vector3.zero)
             {
@@ -201,6 +218,7 @@ namespace Shooting.Gameplay
                 totalVelocity = Vector3.ClampMagnitude(totalVelocity, 11); // 限制速度最大值
                 totalVelocity.y = rigidBody.velocity.y - 4.5f; // 保留垂直速度
                 rigidBody.velocity = totalVelocity;
+                HandleStepClimb(m_MovementInput);
             }
             else
             {
@@ -209,7 +227,56 @@ namespace Shooting.Gameplay
                 rigidBody.velocity = totalVelocity;
             }
         }
-        
+
+        private void HandleStepClimb(Vector3 moveDir)
+        {
+            // 射线1：检测当前地面Y坐标（从胶囊体中心向下）
+            RaycastHit currentGroundHit;
+            Vector3 currentRayOrigin = transform.position + Vector3.up * (capsuleHalfHeight + 0.1f); // 略微抬高起点，避免穿模
+            isOnGround = Physics.Raycast(
+                currentRayOrigin,
+                Vector3.down,
+                out currentGroundHit,
+                capsuleHalfHeight + 0.2f,
+                groundLayer
+            );
+            if (!isOnGround) return; // 不在地面上时不处理
+
+            GizmosDisplay.currentGroundY = currentGroundHit.point.y;
+
+            // 射线2：检测前方台阶Y坐标（从胶囊体前方向下）
+            RaycastHit forwardGroundHit;
+            hasForwardGround = Physics.CapsuleCast(
+                transform.position, // 胶囊体底部
+                transform.position + Vector3.up * capsuleCollider.height, // 胶囊体顶部
+                capsuleCollider.radius,                              // 胶囊体半径
+                moveDir,                                             // 检测方向
+                out forwardGroundHit,                                  // 碰撞信息
+                checkDistance,                                       // 检测距离
+                groundLayer                                          // 检测层级
+            );
+            if (!hasForwardGround) return; // 前方无地面时不处理
+
+            GizmosDisplay.forwardGroundY = forwardGroundHit.point.y;
+            GizmosDisplay.heightDiff = GizmosDisplay.forwardGroundY - GizmosDisplay.currentGroundY;
+            
+            // 条件判断：是否为可攀爬台阶
+            bool canClimbStep = GizmosDisplay.heightDiff > 0.05f && GizmosDisplay.heightDiff <= stepHeight; // 排除微小误差和过高台阶
+            if (!canClimbStep) return;
+            
+            // 替换平滑调整为施加力
+            float upwardForce = GizmosDisplay.heightDiff * stepSmoothSpeed * 100f;
+            rigidBody.AddForce(Vector3.up * upwardForce, ForceMode.Force);
+        }
+
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.color = Color.white;
+            Vector3 currentRayStart = transform.position + Vector3.up * (capsuleHalfHeight + 0.1f);
+            Vector3 currentRayEnd = currentRayStart + Vector3.down * (capsuleHalfHeight + 0.2f);
+            Gizmos.DrawLine(currentRayStart, currentRayEnd);
+        }
+
         // 处理玩家受到伤害
         public void HandleDamage()
         {

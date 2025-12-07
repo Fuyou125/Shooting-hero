@@ -16297,6 +16297,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69d347e4f46762d43905578387590833, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hasForwardGround: 0
+  isOnGround: 0
   m_DamageControl: {fileID: 0}
   m_TurnBase: {fileID: 3182522640177616123}
   m_AimBase: {fileID: 7554119361441852896}
@@ -16307,6 +16309,13 @@ MonoBehaviour:
   m_FirePoint: {fileID: 3341258768852401782}
   m_WeaponPowerParticle: {fileID: 256580012696123632}
   m_DeathParticle: {fileID: 5599717751194728857, guid: 8f1a07dfb9c4b654f9202589fd624f38, type: 3}
+  stepHeight: 0.6
+  checkDistance: 0.9
+  stepSmoothSpeed: 8
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  capsuleCollider: {fileID: 0}
   m_IsDead: 0
   m_Weapons:
   - {fileID: 8253702075977975879}

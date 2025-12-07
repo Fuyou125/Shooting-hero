@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8107466846982847179}
   - component: {fileID: 6580143023376900267}
   - component: {fileID: 2007231978975072779}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -96,7 +96,7 @@ GameObject:
   - component: {fileID: 6753393048548750649}
   - component: {fileID: 4065475123868228557}
   - component: {fileID: 4791916434044241167}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Particle System (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4940,7 +4940,7 @@ GameObject:
   - component: {fileID: 8092469563870835838}
   - component: {fileID: 3817323204653035705}
   - component: {fileID: 5128762132591871203}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: BossBullet1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5005,7 +5005,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7846523760673892628}
   - component: {fileID: 8599795291664729272}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Line
   m_TagString: Untagged
   m_Icon: {fileID: 0}

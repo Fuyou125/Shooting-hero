@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5feb6fbce16c3704a84d6e39f057d8bf, type: 3}
   m_Name: SaveData_Main
   m_EditorClassIdentifier: 
-  m_CheckpointNumber: 4
+  m_CheckpointNumber: 3
